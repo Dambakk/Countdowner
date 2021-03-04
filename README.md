@@ -17,7 +17,7 @@ was a fun exercise.
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
 
-https://user-images.githubusercontent.com/13848515/110027701-982f3700-7d32-11eb-9b13-5301123761c6.mp4
+[Video](/results/video.mp4)
 
 
 ## License
