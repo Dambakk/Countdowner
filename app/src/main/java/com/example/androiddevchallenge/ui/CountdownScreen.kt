@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -25,8 +40,10 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -40,8 +57,6 @@ import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.CountdownViewModel
 import com.example.androiddevchallenge.TimeLeftModel
 import com.example.androiddevchallenge.ui.theme.MyTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 @Composable
 @Preview
@@ -78,7 +93,7 @@ fun CountdownScreen(viewModel: CountdownViewModel) {
                 },
             ) {
                 Text(
-                    text = if (viewModel.timeLeft == null) "Start countdown (${selectedTime})" else "Stop"
+                    text = if (viewModel.timeLeft == null) "Start countdown ($selectedTime)" else "Stop"
                 )
             }
             AnimatedVisibility(visible = viewModel.timeLeft == null) {
@@ -188,7 +203,6 @@ private fun CountdownCircleWrapper(
     )
 }
 
-
 /**
  * Requires a modifier with size set.
  */
@@ -205,17 +219,22 @@ fun CountdownCircle(
         val center = Offset(x = canvasWidth / 2, y = canvasHeight / 2)
         val radius = size.minDimension / 2
         val degreesToDraw = if (degrees == 0) 360f - 0.1f else 360f - degrees.toFloat()
-        withTransform(transformBlock = {
-            clipPath(clipOp = ClipOp.Intersect, path = Path().apply {
-                val rect = Rect(center, radius)
-                addRect(rect)
-                moveTo(canvasWidth / 2, canvasHeight / 2)
-                arcTo(rect, -90f, degreesToDraw, forceMoveTo = false)
+        withTransform(
+            transformBlock = {
+                clipPath(
+                    clipOp = ClipOp.Intersect,
+                    path = Path().apply {
+                        val rect = Rect(center, radius)
+                        addRect(rect)
+                        moveTo(canvasWidth / 2, canvasHeight / 2)
+                        arcTo(rect, -90f, degreesToDraw, forceMoveTo = false)
 //                arcTo(rect, -90f, degrees.toFloat(), forceMoveTo = false) // This one is opposite of what i want; i.e. increases
 //                arcTo(rect, -90f, 360f - degrees, forceMoveTo = false)
 //                arcTo(rect, -90f - degrees, 360f - degrees, forceMoveTo = false)
-            })
-        }) {
+                    }
+                )
+            }
+        ) {
             drawCircle(
                 color = circleColor,
                 center = center,
