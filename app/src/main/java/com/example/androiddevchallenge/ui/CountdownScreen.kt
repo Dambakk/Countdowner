@@ -22,6 +22,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +36,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
@@ -52,6 +56,7 @@ import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.CountdownViewModel
@@ -75,6 +80,7 @@ fun CountdownScreen(viewModel: CountdownViewModel) {
             .fillMaxSize()
             .animateContentSize()
     ) {
+
         var selectedTime by remember { mutableStateOf(TimeLeftModel(60)) }
         Column(
             verticalArrangement = Arrangement.Top,
@@ -168,6 +174,32 @@ fun CountdownScreen(viewModel: CountdownViewModel) {
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+//            Confetti(modifier = Modifier.fillMaxWidth().height(300.dp))
+            AnimatedVisibility(
+                visible = viewModel.showSnackbar,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                Card(
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                    backgroundColor = MaterialTheme.colors.primary,
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = "Time's up!",
+                            style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
+                        )
+                    }
+                }
+            }
         }
     }
 }

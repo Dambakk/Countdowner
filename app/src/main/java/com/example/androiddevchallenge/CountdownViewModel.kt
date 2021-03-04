@@ -20,11 +20,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class CountdownViewModel : ViewModel() {
 
     var timeLeft: TimeLeftModel? by mutableStateOf(null)
     private var timer: CountDownTimer? = null
+
+    var showSnackbar by mutableStateOf(false)
 
     fun startCountdown(timeInSeconds: Long) {
         timer?.cancel()
@@ -45,6 +51,11 @@ class CountdownViewModel : ViewModel() {
             }
             override fun onFinish() {
                 timeLeft = null
+                viewModelScope.launch {
+                    showSnackbar = true
+                    delay(3000)
+                    showSnackbar = false
+                }
             }
         }
     }
