@@ -13,6 +13,14 @@ was a fun exercise.
 ## :camera_flash: Screenshots
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
+
+<figure class="video_container" width="260">
+  <video controls="true" allowfullscreen="true" poster="/results/screenshot_1.png">
+    <source src="/results/video.mp4" type="video/mp4">
+  </video>
+</figure>
+
+
 ## License
 ```
 Copyright 2020 The Android Open Source Project
