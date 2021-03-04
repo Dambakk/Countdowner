@@ -1,14 +1,32 @@
 package com.example.androiddevchallenge.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -22,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.CountdownViewModel
 import com.example.androiddevchallenge.TimeLeftModel
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 @Preview
@@ -42,10 +62,9 @@ fun CountdownScreen(viewModel: CountdownViewModel) {
     ) {
         var selectedTime by remember { mutableStateOf(TimeLeftModel(60)) }
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             Button(
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -62,60 +81,78 @@ fun CountdownScreen(viewModel: CountdownViewModel) {
                     text = if (viewModel.timeLeft == null) "Start countdown (${selectedTime})" else "Stop"
                 )
             }
-            InputSlider {
-                selectedTime = TimeLeftModel(it.toLong())
+            AnimatedVisibility(visible = viewModel.timeLeft == null) {
+                InputSlider {
+                    selectedTime = TimeLeftModel(it.toLong())
+                }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
-
+        }
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             BoxWithConstraints(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-
-                CountdownCircleWrapper(
-                    circleColor = Color.Yellow,
-                    degreesLeft = viewModel.timeLeft?.totalSeconds?.let { (it.toFloat() / selectedTime.totalSeconds.toFloat()) * 360f }
-                        ?: 360f,
-                    modifier = Modifier.size((maxWidth * 0.9f))
-                )
-
-                CountdownCircleWrapper(
-                    circleColor = Color.Green,
-                    degreesLeft = viewModel.timeLeft?.secondsInMinute?.let { (it / 60f) * 360f }
-                        ?: 360f,
-                    modifier = Modifier.size((maxWidth * 0.7f))
-                )
-
-                CountdownCircleWrapper(
-                    circleColor = Color.Blue,
-                    degreesLeft = viewModel.timeLeft?.secondsInTen?.let { (it / 10f) * 360f }
-                        ?: 360f,
-                    modifier = Modifier.size((maxWidth * 0.5f))
-                )
-
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = viewModel.timeLeft != null,
-                    enter = fadeIn(initialAlpha = 0.1f),
-                    exit = fadeOut(),
+                val animatedWidth by animateDpAsState(targetValue = if (viewModel.timeLeft != null) maxWidth else 0.dp)
+                BoxWithConstraints(
+                    modifier = Modifier.size(animatedWidth),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
 
-                        // Text background
-                        CountdownCircleWrapper(
-                            circleColor = Color.Black,
-                            degreesLeft = 360f,
-                            modifier = Modifier.size(this@BoxWithConstraints.maxWidth * 0.3f)
-                        )
+                    CountdownCircleWrapper(
+                        circleColor = Color.Yellow,
+                        degreesLeft = viewModel.timeLeft?.totalSeconds?.let { (it.toFloat() / selectedTime.totalSeconds.toFloat()) * 360f }
+                            ?: 360f,
+                        modifier = Modifier.size((maxWidth * 0.9f))
+                    )
 
-                        Text(
-                            text = viewModel.timeLeft?.toString() ?: "",
-                            color = Color.White,
-                            style = MaterialTheme.typography.h4,
-                        )
+                    CountdownCircleWrapper(
+                        circleColor = Color.Green,
+                        degreesLeft = viewModel.timeLeft?.secondsInMinute?.let { (it / 60f) * 360f }
+                            ?: 360f,
+                        modifier = Modifier.size((maxWidth * 0.7f))
+                    )
+
+                    CountdownCircleWrapper(
+                        circleColor = Color.Blue,
+                        degreesLeft = viewModel.timeLeft?.secondsInTen?.let { (it / 10f) * 360f }
+                            ?: 360f,
+                        modifier = Modifier.size((maxWidth * 0.5f))
+                    )
+
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = viewModel.timeLeft != null,
+                        enter = fadeIn(initialAlpha = 0.1f),
+                        exit = fadeOut(),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+
+                            // Text background
+                            CountdownCircleWrapper(
+                                circleColor = Color.Black,
+                                degreesLeft = 360f,
+                                modifier = Modifier.size(this@BoxWithConstraints.maxWidth * 0.3f)
+                            )
+
+                            Text(
+                                text = viewModel.timeLeft?.toString() ?: "",
+                                color = Color.White,
+                                style = MaterialTheme.typography.h4,
+                            )
+                        }
                     }
                 }
             }
+        }
+
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
         }
     }
 }
